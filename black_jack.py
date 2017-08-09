@@ -47,7 +47,7 @@ class Hand(object):
 
 
 def deal(deck, players, nb_players):
-
+	pass
 
 
 
