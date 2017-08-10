@@ -94,12 +94,11 @@ class Game(object):
 
 def deal(game):
 	#deals 2 cards to each players including the dealer
-	while game.players[game.nb_players].hand.nb_cards < 2:
-		for id_card in range(0, 2):
-			for i in range(game.nb_players + 1):
-				game.players[i].hand.card_add(game.deck.deck[game.deck.count])
-				game.deck.count += 1
-				game.players[i].hand.nb_cards += 1
+	for id_card in range(0, 2):
+		for i in range(game.nb_players + 1):
+			game.players[i].hand.card_add(game.deck.deck[game.deck.count])
+			game.deck.count += 1
+			game.players[i].hand.nb_cards += 1
 
 def show_card(game):
 	#display a list of cards and score that all the players have
@@ -123,7 +122,7 @@ def play_dealer(game, dealer):
 		dealer.hand.card_add(game.deck.deck[game.deck.count])
 		print game.deck.deck[game.deck.count].value + ', ' + game.deck.deck[game.deck.count].color
 		game.deck.count += 1
-		print 'The dealer has now' + dealer.hand.cards[0].value + ',' + dealer.hand.cards[0].color + '\n' + \
+		print 'The dealer has now \n' + dealer.hand.cards[0].value + ',' + dealer.hand.cards[0].color + '\n' + \
 		dealer.hand.cards[1].value + ',' + dealer.hand.cards[1].color
 		print 'Score : ' + str(dealer.hand.value)
 
@@ -174,6 +173,8 @@ def get_bets(game):
 
 def ajust_players(game):
 	for i in range(game.nb_players):
+		del game.players[i].hand
+		game.players[i].hand = Hand()
 		replay = raw_input('Do you want to play again ' + game.players[i].name + '? (y/n)')
 		if (replay == 'n'):
 			print 'Alright goodbye ' + game.players[i].name
