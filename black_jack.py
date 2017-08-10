@@ -14,6 +14,7 @@ class Hand(object):
 		self.cards = []
 		self.nb_cards = nb_cards
 		self.value = 0
+		self.black = False
 
 	def card_add(self,card):
 		''' Add another card to the hand'''
@@ -110,6 +111,9 @@ def show_card(game):
 		if game.players[i].showed == True:
 			print game.players[i].hand.cards[1].value + ',' + game.players[i].hand.cards[1].color
 			print game.players[i].hand.value
+			if game.players[i].hand.value == 21:
+				print 'Yey, Black Jack !!'
+				game.players[i].hand.black = True
 		else:
 			print ('(Hidden)')
 
@@ -127,23 +131,38 @@ def play_dealer(game, dealer):
 		print 'Score : ' + str(dealer.hand.value)
 
 def play_turn(game, dealer):
+	'''
+	# get the move from the player
+	# get it in a string. checking if this string is always egal to 'h'
+	# if the player gets a hand.value > 21 he burned and lose anyway
+	# then the dealer plays and draws until he has at least 16
+	# Then checking the results between the dealer and each player, giving the coins
+	# according to the win or lose
+	'''
 	for i in range(game.nb_players):
+		# get the move from the player
 		move = raw_input('Hey '+ game.players[i].name + ' your score is: ' + \
 		str(game.players[i].hand.value) + ' what is your move ? Press H for hit or S to stand\n')
-		while move == 'h' and game.players[i].hand.value < 21:
+		#continues until he stops
+		# get it in a string. checking if this string is always egal to 'h'
+		while move == 'h' and game.players[i].hand.value < 21 and game.players[i].hand.black == False:
 			game.players[i].hand.card_add(game.deck.deck[game.deck.count])
 			print game.deck.deck[game.deck.count].value + ', ' + game.deck.deck[game.deck.count].color
 			game.deck.count += 1
 			move = raw_input('Now, '+ game.players[i].name + 'your score is: ' + \
 			str(game.players[i].hand.value) + ' what is your move ? Press H for hit or S to stand\n')
+		# if the player gets a hand.value > 21 he burned and lose anyway
 		if game.players[i].hand.value > 21:
 			game.players[i].bankroll -= game.players[i].bet
 			print 'Burn ! You lost your bet'
 			print 'You have now ' + str(game.players[i].bankroll) + 'coins'
 			game.players[i].lost = True
+	# Dealer plays and draws until he has at least 16
 	play_dealer(game, dealer)
 	if dealer.hand.value > 21:
 		print 'The dealer burned !'
+	# Checking the results between the dealer and each player, giving the coins
+	# according to the win or lose
 	for j in range(game.nb_players):
 		if dealer.hand.value > 21:
 			if game.players[j].lost == False:
